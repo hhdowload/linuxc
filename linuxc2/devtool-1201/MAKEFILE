@@ -1,0 +1,35 @@
+
+#管理函数库的语法 lib（file.o）含义是file.o 是存储在lib.a中的
+#默认规则是 .c.a:
+				$(CC) -c $(CFLAGS) $<
+				$(AR) $(ARFLAGS) $@ $*.o
+
+#将a.o b.o放入函数库mylib.a中
+all: myapp 
+#宏定义
+CC = gcc
+INCLUDE = .
+CFLAGS = -g -Wall -ansi
+INSTDIR = /usr/bin
+MYLIB = mylib.a
+
+#规则头用tab开始
+myapp: main.o $(MYLIB)
+	$(CC) -o myapp main.o $(MYLIB)
+$(MYLIB): $(MYLIB)(a.o)  $(MYLIB)(b.o)
+main.o: main.c
+a.o: a.c
+b.o: b.c
+
+clean:
+	-rm -rf a.o b.o main.o $(MYLIB)
+
+#每个Makefile规则调用一个shell，用\使得所有规则在一个shell执行
+install:
+	@if[ -d ${INSTDIR} ];then \
+		cp myapp ${INSTDIR};\
+		chmod a+x ${INSTDIR}/myapp;\
+		echo "install myapp success";\
+	else \
+		echo "sorry the dir is not exit";\
+	fi

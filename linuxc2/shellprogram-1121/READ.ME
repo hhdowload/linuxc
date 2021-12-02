@@ -1,0 +1,107 @@
+#管道和重定向
+    set -o noclobber 
+    set +o noclobber
+    >> > <
+    /dev/null
+    交互式程序、通配符*.[] {} `` $()
+#shell语法
+    变量： 
+       - 字符串 数字 环境 参数
+         $HOME $PATH $PS1 $PS2 $IFS $0 $# $$ $* $@
+    程序控制： if elif for while until case
+        if condition;then      //"$foo" 给变量加引号 ，echo -n 去除换行
+            expression
+        elif
+            expression
+        else
+            expression
+        fi
+
+        for variable in vars
+        do
+        done
+
+        until/while condition ;do
+            statements
+        done
+
+        case variables in 
+            pattern1 | ...) something ;;
+            pattern2  | ...) something ;;
+        esac
+
+
+    条件： 
+        shell中布尔值
+        test []
+        字符串:  = != -n -z
+        算数比较： -eq  -le  -ne -gt -ge -lt  !expression
+        文件条件： -d -e -f -g -r -u -w -x         
+    命令列表:
+        && || 
+    函数
+    内置命令: 
+        break: ":" continue  . source(当前shell)  exec set -a  
+        expr printf return 
+        set:为shell设置参数变量
+        shift  
+        trap command signal
+        find path options tests actions
+            -depth -follow -maxdepth N     -mount
+            -atime N -mtime N -name pattern -newer otherfile -type c 
+            ! -not ; -a -and; -o -or;
+          
+            dongzuo:
+            -exec command; -ok command; -print; -ls
+            正则：^ $ . []
+            grep -E : ? * + {N} {N,} {N,M}
+    获取命令执行结果
+
+        $(( 算数表达式 ))
+        [[  正则表达式 ]]
+        $( 命令 )
+        [ test ]
+    参数扩展：
+        ${param:-default}  ${#param} ${param%%word}尾部匹配删除  ${param##word}头部匹配删除
+    here文档
+        ....
+        char
+    
+    脚本调试：
+        sh -n   =====> set -n   只检查语法，不执行
+        sh -v          set -v
+        sh -x          set -x
+        sh -u          set -u
+
+
+
+
+dialog
+    --msgbox "" wide high
+    --yesno txt heigh wide
+    --tailbox file heigh wide
+    --menu txt heigh width menu-heigh tag item
+通过退出状态或者错误流输出获得输入选择（exec 2>/tmp/tmp.file）
+
+
+//1 #!/bin/bash
+  2
+  3
+  4 [ -e /tmp/tmp_choice ] || touch /tmp/tmp_choice
+  5 exec 2>/tmp/tmp_choice
+  6 dialog --title "service log  " --menu "loglog" 10 30 2 1  "eureka "  2 "date"
+  7 CHOICE=`cat /tmp/tmp_choice`
+  8
+  9 if [ $CHOICE -eq 1 ];then
+ 10         dialog  --tailbox log/date.log 50 50
+ 11         dialog  --title "注意" --yesno "你要退出吗" 20 20
+ 12         [ $? -eq 0 ] && exit
+ 13 elif [[ $CHOICE == "2" ]];then
+ 14         dialog --msgbox "ni hao a" 17 17
+ 15 fi
+ 16
+ 17 clear
+ 18
+ 19 read line
+ 20 echo "WO MEN JIXU"
+//
